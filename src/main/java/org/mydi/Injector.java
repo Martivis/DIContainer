@@ -1,6 +1,5 @@
 package org.mydi;
 
-import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Properties;
@@ -16,22 +15,21 @@ public class Injector {
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         var fields = getAutoInjectableFields(target);
         for (var field : fields) {
-            //field.setAccessible(true);
+            field.setAccessible(true);
             var implName = getImplName(field);
             field.set(target, getImpl(implName));
+            field.setAccessible(false);
         }
     }
 
     private static <TClass> Field[] getAutoInjectableFields(TClass target) {
-        var fields = target.getClass().getFields();
-        var autoInjectableFields = Arrays.stream(fields).filter(field -> {
-            return field.isAnnotationPresent(AutoInjectable.class);
-        }).toArray();
-        return (Field[])autoInjectableFields;
+        var fields = target.getClass().getDeclaredFields();
+        return Arrays.stream(fields).filter(field ->
+            field.isAnnotationPresent(AutoInjectable.class)).toArray(Field[]::new);
     }
 
     private String getImplName(Field field) {
-        var fieldName = field.getName();
+        var fieldName = field.getType().getName();
         return (String) properties.get(fieldName);
     }
 
