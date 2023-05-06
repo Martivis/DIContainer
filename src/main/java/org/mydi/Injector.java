@@ -8,10 +8,26 @@ import java.util.Properties;
 public class Injector {
     private final Properties properties;
 
+    /**
+     * @param properties Properties instance with defined implementations names.
+     */
     public Injector(Properties properties) {
         this.properties = properties;
     }
 
+    /**
+     * Injects implementations defined in properties into fields annotated with @AutoInjectable attribute.
+     * Properties should be defined with pattern
+     * {TypeName}={ImplName}
+     *
+     * @param target Target class instance that should be filled with implementations.
+     * @param <TClass> Type of target class.
+     * @return Filled target class instance.
+     * @throws NoSuchElementException Thrown if there is no definition of one or more field types.
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
     public <TClass> TClass inject(TClass target)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         var fields = getAutoInjectableFields(target);
