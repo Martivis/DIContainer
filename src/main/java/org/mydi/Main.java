@@ -8,8 +8,8 @@ public class Main {
             var properties = PropertiesLoader.load("src/main/resources/config.properties");
             var injector = new Injector(properties);
 
-            var bean = new SomeBean();
-            injector.inject(bean);
+            var bean = injector.inject(new SomeBean());
+
             bean.foo();
         }
         catch (Exception e) {

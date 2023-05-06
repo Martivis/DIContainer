@@ -11,7 +11,7 @@ public class Injector {
         this.properties = properties;
     }
 
-    public <TClass> void inject(TClass target)
+    public <TClass> TClass inject(TClass target)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         var fields = getAutoInjectableFields(target);
         for (var field : fields) {
@@ -20,6 +20,7 @@ public class Injector {
             field.set(target, getImpl(implName));
             field.setAccessible(false);
         }
+        return target;
     }
 
     private static <TClass> Field[] getAutoInjectableFields(TClass target) {
