@@ -2,6 +2,7 @@ package org.mydi;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 public class Injector {
@@ -30,8 +31,12 @@ public class Injector {
     }
 
     private String getImplName(Field field) {
-        var fieldName = field.getType().getName();
-        return (String) properties.get(fieldName);
+        var fieldTypeName = field.getType().getName();
+        var implName = (String) properties.get(fieldTypeName);
+        if (implName == null) {
+            throw new NoSuchElementException();
+        }
+        return implName;
     }
 
     private Object getImpl(String implName)
